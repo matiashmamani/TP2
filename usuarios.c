@@ -128,7 +128,8 @@ bool usuarios_publicar(usuarios_t *usuarios, ssize_t id, const char *usuario){
     while(!hash_iter_al_final(hash_iter)){
         usuario_actual = hash_iter_ver_actual(hash_iter);
         if(usuario_activo == usuario_actual){
-            continue;
+        	hash_iter_avanzar(hash_iter);
+        	continue;
         }
 
         dato_hash = hash_obtener(usuarios->hash, usuario_actual);
