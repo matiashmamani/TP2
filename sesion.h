@@ -2,7 +2,6 @@
 #define _SESION_H
 
 #include <stdbool.h>
-#include <stddef.h>
 
 struct sesion;
 

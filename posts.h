@@ -1,14 +1,10 @@
 #ifndef _POSTS_H
 #define _POSTS_H
 
-#include <stdlib.h>
+#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <stdbool.h>
-#include <string.h>
-#include <stddef.h>
-#include "hash.h"
 #include "lista.h"
-#include "abb.h"
 
 typedef struct posts posts_t;
 

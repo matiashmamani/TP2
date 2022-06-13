@@ -1,12 +1,10 @@
 #define _POSIX_C_SOURCE 200809L
-#define MODO_LECTURA "r"
-
-#include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include <string.h>
-#include "usuarios.h"
 #include "hash.h"
 #include "heap.h"
+#include "usuarios.h"
 
 struct usuarios {
     hash_t *hash;
@@ -71,38 +69,16 @@ usuarios_t *usuarios_crear(void){
     return usuarios;
 }
 
-bool usuarios_cargar_archivo(usuarios_t *usuarios, const char *nombre_archivo){
+bool usuarios_guardar(usuarios_t *usuarios, const char *usuario, size_t pos){
 
-    FILE *archivo = fopen(nombre_archivo, MODO_LECTURA);
-    if(!archivo) return false;
+    dato_hash_t *dato_hash = __dato_hash_crear(pos);
+    if(!dato_hash) return false;
 
-    char *linea;
-    size_t tam;
-    dato_hash_t* dato_hash;
-    size_t pos = 0;
-
-    while(getline(&linea, &tam, archivo) != EOF){
-        dato_hash = __dato_hash_crear(pos);
-        if(!dato_hash){
-            hash_destruir(usuarios->hash);
-            usuarios->hash = hash_crear(__wrapper_dato_hash_destruir);
-            free(linea);
-            fclose(archivo);
-            return false;
-        }
-        if(!hash_guardar(usuarios->hash, linea, dato_hash)){
-            __dato_hash_destruir(dato_hash);
-            hash_destruir(usuarios->hash);
-            usuarios->hash = hash_crear(__wrapper_dato_hash_destruir);
-            free(linea);
-            fclose(archivo);
-            return false;
-        }
-        pos++;
+    if(!hash_guardar(usuarios->hash, usuario, dato_hash)){
+        __dato_hash_destruir(dato_hash);
+        return false;
     }
 
-    free(linea);
-    fclose(archivo);
     return true;
 }
 

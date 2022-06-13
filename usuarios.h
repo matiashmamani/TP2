@@ -1,8 +1,9 @@
 #ifndef _USUARIOS_H
 #define _USUARIOS_H
 
+#define _POSIX_C_SOURCE 200809L
+#include <stdio.h>
 #include <stdbool.h>
-#include <stddef.h>
 
 struct usuarios;
 
@@ -10,7 +11,7 @@ typedef struct usuarios usuarios_t;
 
 usuarios_t *usuarios_crear(void);
 
-bool usuarios_cargar_archivo(usuarios_t *usuarios, const char *nombre_archivo);
+bool usuarios_guardar(usuarios_t *usuarios, const char *usuario, size_t pos);
 
 bool usuarios_pertenece(usuarios_t *usuarios, const char *usuario);
 

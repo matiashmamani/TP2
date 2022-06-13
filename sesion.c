@@ -1,6 +1,6 @@
 #define _POSIX_C_SOURCE 200809L
-
 #include <stdlib.h>
+#include <stddef.h>
 #include <string.h>
 #include "sesion.h"
 
@@ -12,7 +12,6 @@ sesion_t *sesion_crear(void){
     sesion_t *sesion = malloc(sizeof(sesion_t));
     if(!sesion) return NULL;
     sesion->usuario = NULL;
-
     return sesion;
 }
 

@@ -1,5 +1,11 @@
 #define _POSIX_C_SOURCE 200809L
-
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <stddef.h>
+#include "hash.h"
+#include "lista.h"
+#include "abb.h"
 #include "posts.h"
 
 struct posts{
