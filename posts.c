@@ -104,7 +104,7 @@ ssize_t posts_publicar(posts_t* posts,const char* texto,const char * usuario){
 	return id_actual;
 }
 
-bool posts_ver_siguiente_feed(posts_t* posts,size_t id,char** usuario, size_t* cant_likes,char** texto){
+bool posts_ver_siguiente_feed(posts_t* posts,ssize_t id,char** usuario, size_t* cant_likes,char** texto){
 	
 	char clave[5];
 	sprintf(clave,"%zu",id);
@@ -121,7 +121,7 @@ bool posts_ver_siguiente_feed(posts_t* posts,size_t id,char** usuario, size_t* c
 	return true;
 }
 
-bool posts_likear(posts_t* posts,size_t id, const char* usuario){
+bool posts_likear(posts_t* posts,ssize_t id, const char* usuario){
 	
 	char clave[5];
 	sprintf(clave,"%zu",id);
@@ -163,4 +163,29 @@ void posts_destruir(posts_t* posts){
     hash_destruir(posts->hash);
     free(posts);
 }
+
+/*PRAR PROBAR -BORRAR*/
+bool posts_ver(posts_t* posts,ssize_t id){
+	
+	char clave[5];
+	sprintf(clave,"%zu",id);
+	char* usuario;
+	char* texto;
+	size_t cant_likes;
+	
+	if(!hash_pertenece(posts->hash,clave)) return false;
+
+	dato_hash_t* dato_hash = hash_obtener(posts->hash,clave);	
+	
+	usuario = dato_hash->usuario;		
+	cant_likes = dato_hash->cant_likes;
+
+	texto = dato_hash->texto;
+	
+	fprintf(stdout, "usuario %s cant_likes %zu  texto %s \n", usuario, cant_likes, texto);
+	
+	return true;
+}
+
+
 
