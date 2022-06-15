@@ -17,7 +17,8 @@ enum status{
     ERROR_USUARIO_NO_LOGGEADO,
     OK_POST,
     OK_LIKEAR,
-    ERROR_LIKEAR
+    ERROR_LIKEAR,
+    ERROR_MOSTRAR_LIKES
 };
 
 const char *status_msj[] = {
@@ -28,7 +29,8 @@ const char *status_msj[] = {
     "Error: no habia usuario loggeado",
     "Post Publicado",
     "Post likeado",
-    "Error: Usuario no loggeado o Post inexistente"
+    "Error: Usuario no loggeado o Post inexistente",
+    "Error: Post inexistente o sin likes"
 };
 
 bool crear_TDAs(usuarios_t** usuarios, sesion_t** sesion, posts_t** posts);
@@ -42,7 +44,7 @@ void publicar(posts_t* posts, sesion_t *sesion,usuarios_t *usuarios);
 void ver_siguiente_feed(posts_t * posts, sesion_t * sesion,usuarios_t *usuarios);
 void likear_post(posts_t * posts, sesion_t * sesion,usuarios_t *usuarios);
 bool extraer_id(char * str , int *id);
-
+void mostrar_likes(posts_t * posts, sesion_t * sesion,usuarios_t *usuarios);
 
 int main(int argc, char *argv[]){
 
@@ -153,6 +155,9 @@ bool algogram(usuarios_t *usuarios, sesion_t *sesion, posts_t *posts){
         }
         if(!strcmp(linea, "likear_post")){
             likear_post(posts, sesion, usuarios);
+        }
+        if(!strcmp(linea, "mostrar_likes")){
+            mostrar_likes(posts, sesion, usuarios);
         }
         
     }
@@ -265,21 +270,34 @@ void likear_post(posts_t * posts, sesion_t * sesion,usuarios_t *usuarios){
 	
 	getline(&texto, &tam, stdin);   
 	chomp(texto);
-	
-	if(!extraer_id(texto, &id)){
-		fprintf(stdout, "%s\n", status_msj[ERROR_LIKEAR]);
-		return;
-	}
 		
 	usuario_actual = sesion_obtener_usuario(sesion);
 	
-	if(!posts_likear(posts,&id,usuario_actual)){
+	if(!sesion_esta_loggeado(sesion)){
+        	fprintf(stdout, "%s\n", status_msj[ERROR_LIKEAR]);
+        	return;
+    	}
+    	
+	//Valida existencia del post
+/*	char clave[5];
+	sprintf(clave,"%u",id);
+	if(!hash_pertenece(posts->hash,clave)){ 		
+		fprintf(stdout, "%s\n", status_msj[ERROR_LIKEAR]);
+		return;
+	}
+*/	    	
+    	if(!extraer_id(texto, &id)){
+		fprintf(stdout, "%s\n", status_msj[ERROR_LIKEAR]);
+		return;
+	}
+			
+	if(!posts_likear(posts,(ssize_t)id,usuario_actual)){
 		fprintf(stdout, "%s\n", status_msj[ERROR_LIKEAR]);
 		return;
 	}
 		
 	fprintf(stdout, "%s\n", status_msj[OK_LIKEAR]);
-
+	posts_ver(posts,(ssize_t)id);//BORRAR Elu
 }
 
 //Auxiliar
@@ -297,7 +315,47 @@ bool extraer_id(char * str , int * id){
     	return true;
 }
 
+void mostrar_likes(posts_t * posts, sesion_t * sesion,usuarios_t *usuarios){
+	size_t cant_likes = 0;
+	char *texto = NULL;
+	size_t tam = 0;
+	int id;
+	char* usuario;
+		
+	getline(&texto, &tam, stdin);   
+	chomp(texto);
 
+  	if(!extraer_id(texto, &id)){
+		fprintf(stdout, "%s\n", status_msj[ERROR_MOSTRAR_LIKES]);
+		return;
+	}
+/*
+	char clave[5];
+	sprintf(clave,"%u",id);
 
+	//Valida existencia del post
+	if(!hash_pertenece(posts->hash,clave)){ 		
+		fprintf(stdout, "%s\n", status_msj[ERROR_MOSTRAR_LIKES]);
+		return;
+	}
+*/	
+	lista_t* lista;
+	
+	lista = posts_mostrar_likes(posts, (size_t)id, &cant_likes);
+
+	fprintf(stdout, "El post tiene %zu likes:\n", cant_likes); //BORRAR Elu
+
+	lista_iter_t* iter;
+	iter = lista_iter_crear(lista);
+
+	while(!lista_iter_al_final(iter)){
+		usuario = lista_iter_ver_actual(iter);
+		fprintf(stdout, "\t%s\n", usuario);
+        	lista_iter_avanzar(iter);
+    	}
+    	
+	lista_iter_destruir(iter);
+	lista_destruir(lista,NULL);
+}
 
 

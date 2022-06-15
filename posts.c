@@ -164,7 +164,7 @@ void posts_destruir(posts_t* posts){
     free(posts);
 }
 
-/*PRAR PROBAR -BORRAR*/
+/*PRAR PROBAR - BORRAR*/
 bool posts_ver(posts_t* posts,ssize_t id){
 	
 	char clave[5];
