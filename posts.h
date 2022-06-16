@@ -20,6 +20,7 @@ bool posts_likear(posts_t* posts,ssize_t id, const char* usuario);
 lista_t* posts_mostrar_likes(posts_t* posts,size_t id,size_t* cant_likes);
 
 void posts_destruir(posts_t* posts);
+bool posts_existe(posts_t* posts,const char* clave);
 
 bool posts_ver(posts_t* posts,ssize_t id); //BORRAR funcion de prueba
 

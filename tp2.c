@@ -244,7 +244,7 @@ void publicar(posts_t* posts, sesion_t *sesion, usuarios_t * usuarios){
 
 void ver_siguiente_feed(posts_t * posts, sesion_t * sesion, usuarios_t *usuarios){
 
-	size_t * cant_likes = 0;
+	size_t cant_likes = 0;
 	char * texto = NULL;
 	ssize_t id = 0;
 
@@ -257,8 +257,8 @@ void ver_siguiente_feed(posts_t * posts, sesion_t * sesion, usuarios_t *usuarios
 	
 	fprintf(stdout, "%ld\n", id); //BORRAR
 
-	if(posts_ver_siguiente_feed(posts, id, &usuario, cant_likes, &texto))
-		fprintf(stdout, "Post ID %ld\n %s dijo: %s\n %n\n", id, usuario, texto, (int*)cant_likes);
+	if(posts_ver_siguiente_feed(posts, id, &usuario, &cant_likes, &texto))
+		fprintf(stdout, "Post ID %ld\n %s dijo: %s\n %d\n", id, usuario, texto, (int)cant_likes);
 
 }
 
@@ -278,15 +278,12 @@ void likear_post(posts_t * posts, sesion_t * sesion,usuarios_t *usuarios){
         	return;
     	}
     	
-	//Valida existencia del post
-/*	char clave[5];
-	sprintf(clave,"%u",id);
-	if(!hash_pertenece(posts->hash,clave)){ 		
+    	if(!extraer_id(texto, &id)){
 		fprintf(stdout, "%s\n", status_msj[ERROR_LIKEAR]);
 		return;
 	}
-*/	    	
-    	if(!extraer_id(texto, &id)){
+
+	if(!posts_existe(posts,texto)){
 		fprintf(stdout, "%s\n", status_msj[ERROR_LIKEAR]);
 		return;
 	}
@@ -329,16 +326,15 @@ void mostrar_likes(posts_t * posts, sesion_t * sesion,usuarios_t *usuarios){
 		fprintf(stdout, "%s\n", status_msj[ERROR_MOSTRAR_LIKES]);
 		return;
 	}
-/*
+
 	char clave[5];
 	sprintf(clave,"%u",id);
 
-	//Valida existencia del post
-	if(!hash_pertenece(posts->hash,clave)){ 		
+	if(!posts_existe(posts,clave)){
 		fprintf(stdout, "%s\n", status_msj[ERROR_MOSTRAR_LIKES]);
 		return;
 	}
-*/	
+
 	lista_t* lista;
 	
 	lista = posts_mostrar_likes(posts, (size_t)id, &cant_likes);
@@ -354,6 +350,7 @@ void mostrar_likes(posts_t * posts, sesion_t * sesion,usuarios_t *usuarios){
         	lista_iter_avanzar(iter);
     	}
     	
+    	free(texto);
 	lista_iter_destruir(iter);
 	lista_destruir(lista,NULL);
 }

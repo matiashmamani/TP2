@@ -104,12 +104,19 @@ ssize_t posts_publicar(posts_t* posts,const char* texto,const char * usuario){
 	return id_actual;
 }
 
+bool posts_existe(posts_t* posts,const char* clave)
+{
+	return hash_pertenece(posts->hash,clave);
+}
+
+
 bool posts_ver_siguiente_feed(posts_t* posts,ssize_t id,char** usuario, size_t* cant_likes,char** texto){
 	
 	char clave[5];
 	sprintf(clave,"%zu",id);
 
-	if(!hash_pertenece(posts->hash,clave)) return false;
+//	if(!hash_pertenece(posts->hash,clave)) return false;
+	if(!posts_existe(posts,clave))return false;
 
 	dato_hash_t* dato_hash = hash_obtener(posts->hash,clave);	
 	
@@ -126,7 +133,9 @@ bool posts_likear(posts_t* posts,ssize_t id, const char* usuario){
 	char clave[5];
 	sprintf(clave,"%zu",id);
 
-	if(!hash_pertenece(posts->hash,clave)) return false;
+//	if(!hash_pertenece(posts->hash,clave)) return false;
+
+	if(!posts_existe(posts,clave))return false;
 	
 	dato_hash_t* dato_hash = hash_obtener(posts->hash,clave);
 	
@@ -144,7 +153,8 @@ lista_t* posts_mostrar_likes(posts_t* posts,size_t id,size_t* cant_likes){
 	char clave[5];
 	sprintf(clave,"%zu",id);
 	
-	if(!hash_pertenece(posts->hash,clave)) return NULL;
+//	if(!hash_pertenece(posts->hash,clave)) return NULL;
+	if(!posts_existe(posts,clave))return false;
 	
 	dato_hash_t* dato_hash = hash_obtener(posts->hash,clave);
 	
@@ -173,7 +183,8 @@ bool posts_ver(posts_t* posts,ssize_t id){
 	char* texto;
 	size_t cant_likes;
 	
-	if(!hash_pertenece(posts->hash,clave)) return false;
+//	if(!hash_pertenece(posts->hash,clave)) return false;
+	if(!posts_existe(posts,clave))return false;
 
 	dato_hash_t* dato_hash = hash_obtener(posts->hash,clave);	
 	
