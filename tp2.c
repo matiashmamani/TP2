@@ -18,7 +18,8 @@ enum status{
     OK_POST,
     OK_LIKEAR,
     ERROR_LIKEAR,
-    ERROR_MOSTRAR_LIKES
+    ERROR_MOSTRAR_LIKES,
+    ERROR_SIG_FEED    
 };
 
 const char *status_msj[] = {
@@ -30,7 +31,8 @@ const char *status_msj[] = {
     "Post Publicado",
     "Post likeado",
     "Error: Usuario no loggeado o Post inexistente",
-    "Error: Post inexistente o sin likes"
+    "Error: Post inexistente o sin likes",
+    "Usuario no loggeado o no hay mas posts para ver"
 };
 
 bool crear_TDAs(usuarios_t** usuarios, sesion_t** sesion, posts_t** posts);
@@ -251,15 +253,24 @@ void ver_siguiente_feed(posts_t * posts, sesion_t * sesion, usuarios_t *usuarios
 	char *usuario_actual = NULL; //Usuario que esta viendo los feeds
 	char *usuario = NULL; //Guardo el nombre del usuario que posteo el feed
 
+    	if(!sesion_esta_loggeado(sesion)){
+        	fprintf(stdout, "%s\n", status_msj[ERROR_SIG_FEED]);
+        	return;
+    	}	
+
 	usuario_actual = sesion_obtener_usuario(sesion);
 	
 	id = usuarios_ver_sig_feed(usuarios, usuario_actual);
 	
 	fprintf(stdout, "%ld\n", id); //BORRAR
 
+	if(id==-1){
+        	fprintf(stdout, "%s\n", status_msj[ERROR_SIG_FEED]);
+        	return;
+    	}	
+
 	if(posts_ver_siguiente_feed(posts, id, &usuario, &cant_likes, &texto))
 		fprintf(stdout, "Post ID %ld\n %s dijo: %s\n %d\n", id, usuario, texto, (int)cant_likes);
-
 }
 
 void likear_post(posts_t * posts, sesion_t * sesion,usuarios_t *usuarios){
@@ -292,6 +303,8 @@ void likear_post(posts_t * posts, sesion_t * sesion,usuarios_t *usuarios){
 		fprintf(stdout, "%s\n", status_msj[ERROR_LIKEAR]);
 		return;
 	}
+		
+	free(texto);	
 		
 	fprintf(stdout, "%s\n", status_msj[OK_LIKEAR]);
 	posts_ver(posts,(ssize_t)id);//BORRAR Elu
