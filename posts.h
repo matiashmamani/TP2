@@ -8,20 +8,18 @@
 
 typedef struct posts posts_t;
 
-//Primitivas 
-posts_t* posts_crear();
+posts_t* posts_crear(void);
 
-ssize_t posts_publicar(posts_t* posts,const char* texto,const char * usuario);
+bool posts_pertenece(posts_t* posts, const char* clave);
 
-bool posts_ver_siguiente_feed(posts_t* posts,ssize_t id,char** usuario, size_t* cant_likes,char** texto);
+ssize_t posts_publicar(posts_t* posts, const char* texto, const char * usuario);
 
-bool posts_likear(posts_t* posts,ssize_t id, const char* usuario);
+bool posts_ver_siguiente_feed(posts_t* posts, ssize_t id, char** usuario, size_t* cant_likes, char** texto);
 
-lista_t* posts_mostrar_likes(posts_t* posts,size_t id,size_t* cant_likes);
+bool posts_likear(posts_t* posts, const char *clave_id, const char* usuario);
+
+lista_t* posts_mostrar_likes(posts_t* posts, const char *clave_id, size_t* cant_likes);
 
 void posts_destruir(posts_t* posts);
-bool posts_existe(posts_t* posts,const char* clave);
-
-bool posts_ver(posts_t* posts,ssize_t id); //BORRAR funcion de prueba
 
 #endif

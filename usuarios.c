@@ -39,21 +39,15 @@ int afincmp(const void *a, const void *b){
 
 // Funciones auxiliares
 dato_hash_t* __dato_hash_crear(size_t pos);
-
 void __dato_hash_destruir(dato_hash_t *dato_hash);
-
 void __wrapper_dato_hash_destruir(void *dato_hash);
-
 dato_heap_t* __dato_heap_crear(ssize_t id, size_t afinidad);
-
 void __dato_heap_destruir(dato_heap_t *dato_heap);
-
 void __wrapper_dato_heap_destruir(void *dato_heap);
 
 /* *****************************************************************
  *                    PRIMITIVAS DE TDA USUARIOS
  * *****************************************************************/
-
 usuarios_t *usuarios_crear(void){
 
     usuarios_t *usuarios = malloc(sizeof(usuarios_t));
@@ -83,8 +77,7 @@ bool usuarios_guardar(usuarios_t *usuarios, const char *usuario, size_t pos){
 }
 
 bool usuarios_pertenece(usuarios_t *usuarios, const char *usuario){
-    if(!hash_pertenece(usuarios->hash, usuario)) return false;
-    return true;
+    return hash_pertenece(usuarios->hash, usuario);
 }
 
 bool usuarios_publicar(usuarios_t *usuarios, ssize_t id, const char *usuario){
@@ -103,7 +96,7 @@ bool usuarios_publicar(usuarios_t *usuarios, ssize_t id, const char *usuario){
 
     while(!hash_iter_al_final(hash_iter)){
         usuario_actual = hash_iter_ver_actual(hash_iter);
-        if(usuario_activo == usuario_actual){
+        if(!strcmp(usuario_activo, usuario_actual)){
         	hash_iter_avanzar(hash_iter);
         	continue;
         }
@@ -138,7 +131,9 @@ ssize_t usuarios_ver_sig_feed(usuarios_t *usuarios, const char *usuario){
     dato_heap_t *dato_heap = heap_desencolar(dato_hash->heap);
     if(!dato_heap) return -1;
 
-    return dato_heap->id;
+    ssize_t id = dato_heap->id;
+    __dato_heap_destruir(dato_heap);
+    return id;
 }
 
 void usuarios_destruir(usuarios_t *usuarios){
