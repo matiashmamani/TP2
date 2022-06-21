@@ -9,6 +9,7 @@
 #include "sesion.h"
 #include "posts.h"
 
+// Indices de Mensajes
 enum status{
     OK_HOLA = 0,
     ERROR_USUARIO_YA_LOGGEADO,
@@ -22,6 +23,7 @@ enum status{
     ERROR_SIG_FEED    
 };
 
+// Mensajes
 const char *status_msj[] = {
     "Hola",
     "Error: Ya habia un usuario loggeado",
@@ -35,10 +37,13 @@ const char *status_msj[] = {
     "Usuario no loggeado o no hay mas posts para ver"
 };
 
+// Funciones Principales
 bool crear_TDAs(usuarios_t** usuarios, sesion_t** sesion, posts_t** posts);
-void destruir_TDAs(usuarios_t *usuarios, sesion_t *sesion, posts_t *posts);
 bool cargar_archivo(usuarios_t *usuarios, const char *nombre_archivo);
 bool algogram(usuarios_t *usuarios, sesion_t *sesion, posts_t *posts);
+void destruir_TDAs(usuarios_t *usuarios, sesion_t *sesion, posts_t *posts);
+
+// Funciones Secundarias
 void chomp(char *str);
 void login(usuarios_t *usuarios, sesion_t *sesion);
 void logout(sesion_t *sesion);
@@ -47,6 +52,9 @@ void ver_siguiente_feed(posts_t * posts, sesion_t * sesion,usuarios_t *usuarios)
 void likear_post(posts_t * posts, sesion_t * sesion,usuarios_t *usuarios);
 void mostrar_likes(posts_t * posts, sesion_t * sesion,usuarios_t *usuarios);
 
+/* *****************************************************************
+ *                    PROGRAMA PRINCIPAL
+ * *****************************************************************/
 int main(int argc, char *argv[]){
 
     if(argc < MIN_ARGS){
@@ -77,6 +85,9 @@ int main(int argc, char *argv[]){
     return EXIT_SUCCESS;
 }
 
+/* *****************************************************************
+ *                    FUNCIONES PRINCIPALES
+ * *****************************************************************/
 bool crear_TDAs(usuarios_t** usuarios, sesion_t** sesion, posts_t** posts){
     *usuarios = usuarios_crear();
     if(!(*usuarios)) return false;
@@ -95,13 +106,6 @@ bool crear_TDAs(usuarios_t** usuarios, sesion_t** sesion, posts_t** posts){
     }
 
     return true;
-}
-
-void destruir_TDAs(usuarios_t *usuarios, sesion_t *sesion, posts_t *posts){
-
-    usuarios_destruir(usuarios);
-    sesion_destruir(sesion);
-    posts_destruir(posts);
 }
 
 bool cargar_archivo(usuarios_t *usuarios, const char *nombre_archivo){
@@ -163,6 +167,16 @@ bool algogram(usuarios_t *usuarios, sesion_t *sesion, posts_t *posts){
     return true;
 }
 
+void destruir_TDAs(usuarios_t *usuarios, sesion_t *sesion, posts_t *posts){
+
+    usuarios_destruir(usuarios);
+    sesion_destruir(sesion);
+    posts_destruir(posts);
+}
+
+/* *****************************************************************
+ *                    FUNCIONES SECUNDARIAS
+ * *****************************************************************/
 void chomp(char *str){
     size_t largo = strlen(str);
     if(!largo) return;
@@ -176,7 +190,7 @@ void login(usuarios_t *usuarios, sesion_t *sesion){
 
     char *usuario = NULL;
     size_t tam = 0;
-    getline(&usuario, &tam, stdin);   
+    if(!getline(&usuario, &tam, stdin)) return;
     chomp(usuario);
 
     if(!sesion_login(sesion, usuario)){
@@ -211,7 +225,7 @@ void publicar(posts_t* posts, sesion_t *sesion, usuarios_t * usuarios){
 
 	char *texto = NULL;
 	size_t tam = 0;	
-	getline(&texto, &tam, stdin);   
+	if(!getline(&texto, &tam, stdin)) return;   
 	chomp(texto);
 
     if(!sesion_esta_loggeado(sesion)){
@@ -273,7 +287,7 @@ void likear_post(posts_t * posts, sesion_t * sesion, usuarios_t *usuarios){
 
 	char *clave_id = NULL;
 	size_t tam = 0;
-	getline(&clave_id, &tam, stdin);   
+	if(!getline(&clave_id, &tam, stdin)) return;   
 	chomp(clave_id);
 
 	if(!posts_pertenece(posts, clave_id)){
@@ -298,7 +312,7 @@ void mostrar_likes(posts_t *posts, sesion_t *sesion, usuarios_t *usuarios){
 	
 	char *clave_id = NULL;
 	size_t tam = 0;
-	getline(&clave_id, &tam, stdin);   
+	if(!getline(&clave_id, &tam, stdin)) return;   
 	chomp(clave_id);
 
 	if(!posts_pertenece(posts, clave_id)){

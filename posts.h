@@ -10,7 +10,7 @@ typedef struct posts posts_t;
 
 posts_t* posts_crear(void);
 
-bool posts_pertenece(posts_t* posts, const char* clave);
+bool posts_pertenece(posts_t* posts, const char* clave_id);
 
 ssize_t posts_publicar(posts_t* posts, const char* texto, const char * usuario);
 

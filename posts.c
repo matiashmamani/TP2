@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stddef.h>
-#include <math.h>
 #include "hash.h"
 #include "lista.h"
 #include "abb.h"
@@ -47,8 +46,8 @@ posts_t* posts_crear(void){
 	return posts;
 }
 
-bool posts_pertenece(posts_t* posts,const char* clave){
-	return hash_pertenece(posts->hash,clave);
+bool posts_pertenece(posts_t* posts, const char* clave_id){
+	return hash_pertenece(posts->hash, clave_id);
 }
 
 ssize_t posts_publicar(posts_t *posts, const char* texto, const char *usuario){
@@ -167,13 +166,12 @@ bool _enlistar_usuarios(const char* clave, void* dato, void* extra) {
 
 char *_id_a_string(size_t id){
 	
-	size_t largo_clave;
+	size_t numero = id;
+	size_t largo_clave = 1;
 
-	if(id > 0){
-		double digitos = log10((double)id);
-		largo_clave = (size_t)floor(digitos) + 1;
-	} else {
-		largo_clave = 1;
+	while(numero >= 10){
+		numero = numero / 10;
+		largo_clave++;
 	}
 	
 	char *clave = malloc(sizeof(char)*(largo_clave + 1));

@@ -5,7 +5,7 @@
 #include "sesion.h"
 
 struct sesion {
-    char* usuario;
+    char *usuario;
 };
 
 sesion_t *sesion_crear(void){
@@ -18,7 +18,7 @@ sesion_t *sesion_crear(void){
 bool sesion_login(sesion_t *sesion, const char *usuario){
     if(sesion_esta_loggeado(sesion)) return false;
 
-    char* usuario_dup = strdup(usuario);
+    char *usuario_dup = strdup(usuario);
     if(!usuario_dup) return false;
     sesion->usuario = usuario_dup;
 
